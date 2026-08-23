@@ -16,6 +16,7 @@ def run_prompt_gemini(prompt):
     url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-thinking-exp:generateContent?key={os.environ['GEMINI_API_KEY']}"
     #url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key={os.environ['GEMINI_API_KEY']}"
     url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key={os.environ['GEMINI_API_KEY']}"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.7-flash:generateContent?key={os.environ['GEMINI_API_KEY']}"
     headers = {
         "Content-Type": "application/json"
     }
@@ -44,9 +45,12 @@ def get_polymarkets():
     html = requests.get("https://polymarket.com").content
     soup = BeautifulSoup(html, features="lxml")
 
-    data = json.loads(soup.select("script")[-1].text)
-    #print(data.keys())
+    script = [s for s in soup.select("script") if "self.__next_f.push" in s.text and "queries" in s.text and "outcomePrices" in s.text]
 
+    if not script:
+        print("Can't find script")
+        raise
+        
     IS_COMPRESSED=False
 
     if IS_COMPRESSED:
@@ -63,8 +67,10 @@ def get_polymarkets():
 
         queries = json.loads(decompressed_data)["queries"]
     else:
-        queries = data["props"]["pageProps"]["dehydratedState"]["queries"]
+        # queries = data["props"]["pageProps"]["dehydratedState"]["queries"]
+        queries = json.loads(json.loads(re.findall("^self.__next_f.push\\((.*)\\)$",script[0].text)[0])[1].split(":",1)[1])[3]["state"]["queries"]
 
+        
     all_events = []
 
     def interest_fn(market):

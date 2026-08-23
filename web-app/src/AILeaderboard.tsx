@@ -107,6 +107,7 @@ const PerformanceChart = ({xAxisVar, xAxisTicks, xAxisDomain, xAxisLabel}) => {
     {id: "20250101", label: "Jan 1, 2025"},
     {id: "20250701", label: "Jul 1, 2025"},
     {id: "20260101", label: "Jan 1, 2026"},
+    {id: "20260701", label: "Jul 1, 2026"},
     {id: null, label: "Now"},
   ];
 

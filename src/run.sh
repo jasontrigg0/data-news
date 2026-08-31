@@ -16,6 +16,10 @@ cd sports_elos
 python3 populate_data.py
 cd ..
 
+cd fantasy-football
+python3 ff_draft.py
+cd ..
+
 set +x
 
 #cd ../../web-app

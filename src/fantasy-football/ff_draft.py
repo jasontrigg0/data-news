@@ -10,6 +10,17 @@ PRIORITY_POSITIONS = ["QB", "RB", "WR", "TE"]
 FLEX_POSITIONS = ["RB","WR","TE"]
 YEAR = 2026
 
+
+CUSTOM_POSITION_SLOTS = {}
+
+CUSTOM_SCORING = {}
+
+JT_LEAGUE = False
+if JT_LEAGUE:
+    CUSTOM_POSITION_SLOTS["Flex"] = 2
+    CUSTOM_SCORING["pass_td"] = 6
+
+
 #pull fantasypros, espn rankings, yahoo rankings
 #and place in data/{YEAR}
 
@@ -284,9 +295,7 @@ def load_ffpros_projections(league, ppr=0):
     else:
         raise
 
-    CUSTOM_SCORING = False
-    if CUSTOM_SCORING:
-        league_scoring["pass_tds"] = 6
+    league_scoring = {**league_scoring, **CUSTOM_SCORING}
     
     player_to_projection = {}
     for pos in ["QB","RB","WR","TE","K","DST"]:
@@ -539,6 +548,8 @@ if __name__ == "__main__":
         "K": 1,
     }
 
+    position_slots = {**position_slots, **CUSTOM_POSITION_SLOTS}
+    
     output = {}
     for team_cnt in [8,10,12]:
         for league in ["espn", "yahoo"]:
